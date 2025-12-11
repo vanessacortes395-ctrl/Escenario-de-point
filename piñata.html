@@ -1,0 +1,179 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <title>Piñata</title>
+</head>
+<body>
+    
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+
+<!-- Aquí va todo el código de three.js -->
+<!-- script type="importmap" importa las librerías necesarias para three.js-->
+<script type="importmap"> 
+    {
+        "imports":{
+            "three": "./js/three.module.js",
+            "three/OrbitControls": "./js/OrbitControls.js" 
+        }
+}
+</script>
+<script type="module"> 
+//🗃️🗃️ Mandar llamar a la librería
+    import * as THREE from 'three'; 
+    import {OrbitControls} from 'three/OrbitControls';
+    console.log(OrbitControls);
+    import {RoundedBoxGeometry} from "./js/RoundedBoxGeometry.js"
+
+//🕹️🕹️ Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('myCanvas'), antialias: true,
+    });
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xEBEBEB);
+
+
+// 🎬 Creando nueva escena - Es el espacio donde se colocan los objetos
+    var scene = new THREE.Scene();
+
+//🎥🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(70,window.innerWidth / window.innerHeight,0.1,2000
+      );
+    scene.add(camera);
+    const sizes ={
+        width: window.innerWidth,
+        height: window.innerHeight,
+    };
+    //redimensionar canvas
+      const canvas = document.getElementById('myCanvas');
+      window.addEventListener('resize', () => {
+      })
+sizes.width = window.innerWidth;
+sizes.height = window.innerHeight;
+
+ camera.aspect = sizes.width / sizes.height;
+ camera.updateProjectionMatrix();
+ renderer.setSize(sizes.width, sizes.height);
+
+    //Settings de la cámara
+    camera.position.set(0, 4, 30);
+
+    // Añadiendo los OrbitControls
+    var controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    var gridHelper = new THREE.GridHelper(50,50,);
+    //scene.add (gridHelper);
+
+    var gridHelper = new THREE.PolarGridHelper(20,16,20,64);
+    //scene. add (gridHelper); //maya
+
+    var gridHelper = new THREE.AxesHelper(500);
+    //scene. add (gridHelper);  //lineas de coodenadas
+
+    ///////////
+    ///LUCES
+   var light1= new THREE.DirectionalLight(0Xffffff,0.8);
+   light1.position.set (0,20,50);
+   scene.add(light1);
+
+// BASE
+var geometry10= new THREE. BoxGeometry (30,0.4,30)
+var material10= new THREE.MeshLambertMaterial({ 
+     color:0xCEF2DE, side: THREE.DoubleSide
+});
+   var mesh10= new THREE.Mesh(geometry10,material10);
+   scene.add(mesh10);
+   mesh10.position.set (-0,-1);
+   mesh10.castShadow = true;
+    
+// Casa HECHA SOLO CON MESH
+function piñata({ x, y, z }) {
+
+     // Cuerpo de la piñata
+    const materialCentro = new THREE.MeshBasicMaterial({ color: 0xffe600 }); // amarillo
+    const cuerpoGeo = new THREE.SphereGeometry(3.5, 12, 12);
+    const cuerpo = new THREE.Mesh(cuerpoGeo, materialCentro);
+    cuerpo.position.set(0, 9.5, 0);
+
+    // Materiales para los picos (colores variados)
+    const rojo = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const verde = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const azul = new THREE.MeshBasicMaterial({ color: 0x0066ff });
+    const rosa = new THREE.MeshBasicMaterial({ color: 0xff4dc4 });
+    const naranja = new THREE.MeshBasicMaterial({ color: 0xff8c00 });
+    const morado = new THREE.MeshBasicMaterial({ color: 0x8000ff });
+
+    // Geometría de los picos
+    const picoGeo = new THREE.ConeGeometry(2, 5, 8);
+
+    // Crear 7 picos con diferentes posiciones
+    const pico1 = new THREE.Mesh(picoGeo, rojo);
+    pico1.position.set(0, 14, 0);
+
+    const pico2 = new THREE.Mesh(picoGeo, verde);
+    pico2.position.set(0, 11, 5);
+  pico2.rotation.x = -5;
+
+    const pico3 = new THREE.Mesh(picoGeo, azul);
+    pico3.position.set(0, 11, -5);
+  pico3.rotation.x = 5;
+
+    const pico4 = new THREE.Mesh(picoGeo, rosa);
+    pico4.position.set(-5, 9, 0);
+    pico4.rotation.z = 8;
+
+    const pico5 = new THREE.Mesh(picoGeo, naranja);
+    pico5.position.set(5, 9, 0);
+pico5.rotation.z = -8;
+
+    const pico6 = new THREE.Mesh(picoGeo, morado);
+    pico6.position.set(0, 5, 2.8);
+pico6.rotation.x = -10;
+
+    const pico7 = new THREE.Mesh(picoGeo, rojo);
+    pico7.position.set(0, 5, -2.8);
+pico7.rotation.x = 10;
+
+    // AGRUPACIÓN
+    const pinata = new THREE.Group();
+    pinata.add(
+        cuerpo,
+        pico1,
+        pico2,
+        pico3,
+        pico4,
+        pico5,
+        pico6,
+        pico7
+    );
+
+    pinata.position.set(x, y, z);
+   
+    return pinata;
+}
+
+// AFREGAR A LA ESCENA
+const miPiñata= piñata({ x: 0, y: 0, z: 0 });
+scene.add(miPiñata);
+
+//🎰🎰Rendering y animación
+    requestAnimationFrame(render);
+    function render() {
+
+    //🪄🪄 Animación - 
+ 
+    //🎮🎮Actualización del OrbitControls para generar la suavidad de movimiento
+    controls.update();
+
+    //Llamado para renderizar y volver a llamar a la misma función (render)
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+    }
+</script>
+</body>
+</html>

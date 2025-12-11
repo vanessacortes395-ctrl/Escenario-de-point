@@ -1,0 +1,475 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <title>ESCENARIO</title>
+</head>
+<body>
+    <canvas id="myCanvas"></canvas>
+    <!--El elemento HTML canvas se puede utilizar para dibujar graficas y secuencias de comandos(por lo general JavaScript) .--> </canvas>
+
+<script type="importmap">
+    {
+        "imports":{
+            "three": "./js/three.module.js",
+            "three/OrbitControls": "./js/OrbitControls.js" 
+        }
+        
+}
+</script>
+<script type="module"> 
+
+//🗃️🗃️ Mandar llamar a la librería
+    import * as THREE from 'three'; 
+    import {OrbitControls} from 'three/OrbitControls';
+    console.log(OrbitControls);
+    import { TextGeometry } from "./js/TextGeometry.js";
+    import { FontLoader } from "./js/FontLoader.js";
+    import arbol from "./objetos/arbol.js";
+    import casa from "./objetos/casa.js";
+    import piñata from "./objetos/piñata.js";
+    import santa from "./objetos/santa.js";
+    import BolaDeNieve from "./objetos/BolaDeNieve.js";
+    import Vela from "./objetos/vela.js";
+    import Campana from "./objetos/Campana.js";
+    import CasaNavidad from "./objetos/casagrande.js";
+    import Lampara from "./objetos/Lampara.js";
+    import tren from "./objetos/tren.js";
+    import Tunel from "./objetos/tunel.js";
+    import pista from "./objetos/pista.js";
+    import Cascanueces from "./objetos/cascanueces.js";
+    import corona from "./objetos/corona.js";
+    import Muñeco from "./objetos/muñeco.js";
+    import Pinguino from "./objetos/pinguino.js";
+    import Banca from "./objetos/banca.js";
+    import Carrusel from "./objetos/carrusel.js";
+    import Regalos from "./objetos/regalos.js";
+    import Barda from "./objetos/barda.js";
+    import Iglesia from "./objetos/iglesia.js";
+    import Entrada from "./objetos/entrada.js";
+    import MiradorNavideno from "./objetos/mirador.js";
+    import CombiNavidena from "./objetos/combi.js";
+    import CastilloNavideno from "./objetos/castillo.js";
+    
+//🕹️🕹️ Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('myCanvas'), antialias: true,
+    });
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    window.addEventListener("resize", () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+    //FONDO
+    renderer.setClearColor(0xD1C2CF);
+
+
+// 🎬 Creando nueva escena - Es el espacio donde se colocan los objetos
+    var scene = new THREE.Scene();
+
+//🎥🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(70,window.innerWidth / window.innerHeight,0.1,2000
+      );
+    scene.add(camera);
+
+    //Settings de la cámara
+    camera.position.set(0, 8, 30);
+
+    // Añadiendo los OrbitControls
+    var controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    var gridHelper = new THREE.GridHelper(50,50,);
+    //scene.add (gridHelper);
+
+    var gridHelper = new THREE.PolarGridHelper(20,16,20,64);
+    //scene. add (gridHelper); //maya
+
+    var gridHelper = new THREE.AxesHelper(500);
+    //scene. add (gridHelper);  //lineas de coodenadas
+
+    ///LUCES
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+scene.add(ambientLight);
+var light1= new THREE.DirectionalLight(0Xffffff,0.8);
+light1.position.set (50,50,50);
+scene.add(light1);
+
+//scene.add(light1);
+
+//  Fondo
+const loader = new THREE.TextureLoader();
+scene.background = loader.load('./assets/fondo.png');
+
+// BASE
+const geometryBase = new THREE.BoxGeometry(1000, 0.5, 1000);
+const materialBase = new THREE.MeshLambertMaterial({ map: loader.load('./assets/piso1.jpg') });
+const meshBase = new THREE.Mesh(geometryBase, materialBase);
+meshBase.position.set(0, -1, 0);
+meshBase.castShadow = true;
+scene.add(meshBase);
+
+// Piedra
+//const geometryPiedra = new THREE.CylinderGeometry(25, 15, 14, 26);
+//const materialPiedra = new THREE.MeshLambertMaterial({ color: 0x2D2E2E });
+//const meshPiedra = new THREE.Mesh(geometryPiedra, materialPiedra);
+//meshPiedra.position.set(0, 6.5, -370);
+//scene.add(meshPiedra);
+
+
+// Bloque 1
+const geometryNieve1 = new THREE.BoxGeometry(650, 80, 150);
+const materialNieve1 = new THREE.MeshLambertMaterial({ color: 0xCBD9DC });
+const meshNieve1 = new THREE.Mesh(geometryNieve1, materialNieve1);
+meshNieve1.position.set(-70, 25, -410);
+scene.add(meshNieve1);
+
+// CASA IZQUIERDA 
+const miCasagrandeIzq = CasaNavidad({ x: -318, y: 68, z: -410 });
+scene.add(miCasagrandeIzq);
+miCasagrandeIzq.scale.set(18, 18, 16);
+
+// CASA DERECHA (escala 8)
+const miCasagrandeDer = CasaNavidad({ x: 160, y: 68, z: -410 });
+scene.add(miCasagrandeDer);
+miCasagrandeDer.scale.set(18, 18, 16);
+    
+
+// OBJETOS
+//piñata
+var miPiñata= piñata({ x: 0, y: 108, z: 425 });
+scene.add(miPiñata);
+miPiñata.scale.set(4.5, 4.5, 4.5);
+miPiñata.rotation.Z=-0.157;
+
+var miPiñataDer= piñata({ x: -90, y: 112, z: 425 });
+scene.add(miPiñataDer);
+miPiñataDer.scale.set(3.5, 3.5, 3.5);
+miPiñataDer.rotation.Z=-0.157;
+
+var miPiñataIzq= piñata({ x: 90, y: 112, z: 425 });
+scene.add(miPiñataIzq);
+miPiñataIzq.scale.set(3.5, 3.5, 3.5);
+miPiñataIzq.rotation.Z=-0.157;
+
+// Piñatas a la izquierda entre campanas
+
+var miPiñataIzq1 = piñata({ x: -200, y: 112, z: 425 });
+scene.add(miPiñataIzq1);
+miPiñataIzq1.scale.set(4.5, 4.5, 4.5);
+miPiñataIzq1.rotation.Z = -0.157;
+
+var miPiñataIzq2 = piñata({ x: -300, y: 110, z: 425 });
+scene.add(miPiñataIzq2);
+miPiñataIzq2.scale.set(3.5, 3.5, 3.5);
+miPiñataIzq2.rotation.Z = -0.157;
+
+// Piñatas a la derecha entre campanas
+var miPiñataDer2 = piñata({ x: 200, y: 112, z: 425 });
+scene.add(miPiñataDer2);
+miPiñataDer2.scale.set(4.5, 4.5, 4.5);
+miPiñataDer2.rotation.Z = -0.157;
+
+var miPiñataDer3 = piñata({ x: 300, y: 110, z: 425 });
+scene.add(miPiñataDer3);
+miPiñataDer3.scale.set(3.5, 3.5, 3.5);
+miPiñataDer3.rotation.Z = -0.157;
+
+// arbol
+var miArbol = arbol({ x: 0, y: 4, z: -170 });
+scene.add(miArbol);
+miArbol.scale.set(18, 18, 18);
+
+// Casa
+const miCasa = casa({ x: -400, y: 0.6, z: 200 });
+scene.add(miCasa);
+miCasa.scale.set(18, 16, 18);
+miCasa.rotation.y = 7;
+
+//casa izquerda
+const miCasaIzq = casa({ x: -400, y: 0.6, z: -220 });
+scene.add(miCasaIzq);
+miCasaIzq.scale.set(18, 16, 18);
+miCasaIzq.rotation.y = 7;
+
+
+// santa
+const miSanta = santa({ x: -170, y: 0.6, z:-150 });
+scene.add(miSanta);
+miSanta.scale.set(9, 9, 9);
+//miSanta.rotation.y = -1.57;
+
+// BOLA DE NIEVE
+const miBola = BolaDeNieve({ x: 0, y: 0.6, z:100 });
+scene.add(miBola);
+miBola.scale.set(12, 12, 12);
+
+
+//CAMPANA
+const miCampana = Campana({ x: -50, y: 156, z:425 });
+scene.add(miCampana);
+miCampana.scale.set(4.5, 4.5, 4.5);
+
+//CAMPANA
+const miCampanaDer = Campana({ x: 50, y: 156, z:425 });
+scene.add(miCampanaDer);
+miCampanaDer.scale.set(4.5, 4.5, 4.5);
+
+//CAMPANA
+const miCampanaDer2 = Campana({ x: -150, y: 156, z:425 });
+scene.add(miCampanaDer2);
+miCampanaDer2.scale.set(4.5, 4.5, 4.5);
+
+//CAMPANA
+const miCampana2 = Campana({ x: 150, y: 156, z:425 });
+scene.add(miCampana2);
+miCampana2.scale.set(4.5, 4.5, 4.5);
+
+const miCampanaIzq2 = Campana({ x: -250, y: 156, z: 425 }); // nueva izquierda 1
+scene.add(miCampanaIzq2);
+miCampanaIzq2.scale.set(4.5, 4.5, 4.5);
+
+const miCampanaIzq3 = Campana({ x: -350, y: 156, z: 425 }); // nueva izquierda 2
+scene.add(miCampanaIzq3);
+miCampanaIzq3.scale.set(4.5, 4.5, 4.5);
+
+const miCampanaIzq4 = Campana({ x: -450, y: 156, z: 425 }); // nueva izquierda 3
+scene.add(miCampanaIzq4);
+miCampanaIzq4.scale.set(4.5, 4.5, 4.5);
+
+const miCampanaDer4 = Campana({ x: 250, y: 156, z: 425 }); // nueva derecha 1
+scene.add(miCampanaDer4);
+miCampanaDer4.scale.set(4.5, 4.5, 4.5);
+
+const miCampanaDer5 = Campana({ x: 350, y: 156, z: 425 }); // nueva derecha 2
+scene.add(miCampanaDer5);
+miCampanaDer5.scale.set(4.5, 4.5, 4.5);
+
+const miCampanaDer6 = Campana({ x: 450, y: 156, z: 425 }); // nueva derecha 3
+scene.add(miCampanaDer6);
+miCampanaDer6.scale.set(4.5, 4.5, 4.5);
+
+//CASA GRANDE
+//const miCasagrande = CasaNavidad({ x: -80, y: 65, z:-410 });
+//scene.add(miCasagrande);
+//miCasagrande.scale.set(17, 17, 17);
+
+//Lampara
+const miLampara = Lampara({ x: 450, y: 1, z: 425 });
+scene.add(miLampara);
+miLampara.scale.set(5, 5, 5);
+miLampara.rotation.y = 4.5;
+
+//Lampara
+const miLamparaIzq = Lampara({ x: -450, y: 1, z: 425 });
+scene.add(miLamparaIzq);
+miLamparaIzq.scale.set(5, 5, 5);
+miLamparaIzq.rotation.y = -4.5;
+
+// CABLE ENTRE LÁMPARAS
+const cableGeo = new THREE.BoxGeometry(900, 1, 1);
+const cableMat = new THREE.MeshLambertMaterial({ color: 0x000000 });
+
+const cable = new THREE.Mesh(cableGeo, cableMat);
+
+// posición al centro entre ambas lámparas
+cable.position.set(0, 170, 425);  
+scene.add(cable);
+
+//TREN
+const miTren = tren({ x: 370, y: 12, z: 115 });
+scene.add(miTren);
+miTren.scale.set(6, 6, 6);
+miTren.rotation.y=-11;
+
+//Tunel
+const miTunel = Tunel({ x: 370, y: -15, z: -145 });
+scene.add(miTunel);
+miTunel.scale.set(5, 6, 6);
+miTunel.rotation.y=-11;
+
+//Iglesia
+const miIglesia = Iglesia({ x: 370, y: 150, z:-430 });
+scene.add(miIglesia);
+miIglesia.scale.set(10, 9, 10);
+
+//Pista
+const miPista = pista({ x: 0, y: 0, z:100 });
+scene.add(miPista);
+miPista.scale.set(1.5, 1.5, 1.5);
+
+//Cascanueces
+const miCascanueces = Cascanueces({ x: 170, y: 0.6, z:-150 });
+scene.add(miCascanueces);
+miCascanueces.scale.set(7.5, 7.5, 7.5);
+
+//CORONA
+//const miCorona= corona({ x: 170, y: 120, z:-130 });
+//scene.add(miCorona);
+//miCorona.scale.set(6, 6, 6);
+
+// Muñecos de nieve
+const MiMuñeco = Muñeco({ x: -100, y: 8, z: 60 });
+scene.add(MiMuñeco);
+MiMuñeco.scale.set(8.5, 8.5, 8.5);
+
+const MiMuñeco1 = Muñeco({ x: 185, y: 8, z: 70 });
+scene.add(MiMuñeco1);
+MiMuñeco1.scale.set(8.5, 8.5, 8.5);
+
+const MiMuñeco2 = Muñeco({ x: 0, y: 8, z: 200 });
+scene.add(MiMuñeco2);
+MiMuñeco2.scale.set(8.5, 8.5, 8.5);
+
+
+// Pingüinos 
+const miPinguino = Pinguino({ x: -100, y: 8, z: 120 });
+scene.add(miPinguino);
+miPinguino.scale.set(7, 7, 7);
+
+const miPinguino1 = Pinguino({ x: 10, y: 8, z: 150 });
+scene.add(miPinguino1);
+miPinguino1.scale.set(7, 7, 7);
+
+const miPinguino2 = Pinguino({ x: 100, y: 8, z: 100 });
+scene.add(miPinguino2);
+miPinguino2.scale.set(7, 7, 7);
+
+
+//Banca
+const MiBanca = Banca({ x: -240, y: 0, z: 300 });
+scene.add(MiBanca);
+MiBanca.scale.set(15, 15, 10);
+MiBanca.rotation.y=8.5;
+
+//Banca
+const MiBanca1 = Banca({ x: 240, y: 0, z: 300 });
+scene.add(MiBanca1);
+MiBanca1.scale.set(15, 15, 10);
+MiBanca1.rotation.y=-8.5;
+
+//carrusel
+const miCarrusel = Carrusel({ x: 350, y: 2, z: 340 });
+scene.add(miCarrusel);
+miCarrusel.scale.set(12, 12, 12);
+
+//Regalos
+const miregalos = Regalos({ x: 60, y: 0.6, z:-170 });
+scene.add(miregalos);
+miregalos.scale.set(15, 15, 15);
+miregalos.rotation.y=8.5;
+
+//Regalos
+const miregalos1 = Regalos({ x: 10, y: 0.6, z:-120 });
+scene.add(miregalos1);
+miregalos1.scale.set(15, 15, 15);
+miregalos1.rotation.y=8.5;
+
+//Regalos
+const miregalos2 = Regalos({ x: -55, y: 0.6, z:-150 });
+scene.add(miregalos2);
+miregalos2.scale.set(15, 15, 15);
+miregalos2.rotation.y=-8.2;
+
+//BARDA
+const MiBarda = Barda({ x: 300, y: 0.6, z:-95 });
+scene.add(MiBarda);
+MiBarda.scale.set(15, 15, 15);
+MiBarda.rotation.y=11;
+
+//BARDA
+const MiBarda1 = Barda({ x: 300, y: 0.6, z:0 });
+scene.add(MiBarda1);
+MiBarda1.scale.set(15, 15, 15);
+MiBarda1.rotation.y=11;
+
+//BARDA
+const MiBarda2 = Barda({ x: 300, y: 0.6, z:95});
+scene.add(MiBarda2);
+MiBarda2.scale.set(15, 15, 15);
+MiBarda2.rotation.y=11;
+
+// BARDA EXTRA IZQ 1 
+const MiBarda6 = Barda({ x: 300, y: 0.6, z: -190 });
+scene.add(MiBarda6);
+MiBarda6.scale.set(15, 15, 15);
+MiBarda6.rotation.y = 11;
+
+// BARDA EXTRA IZQ 2 
+const MiBarda7 = Barda({ x: 300, y: 0.6, z: -285 });
+scene.add(MiBarda7);
+MiBarda7.scale.set(15, 15, 15);
+MiBarda7.rotation.y = 11;
+
+//BARDA
+const MiBarda3 = Barda({ x: 440, y: 0.6, z:-95 });
+scene.add(MiBarda3);
+MiBarda3.scale.set(15, 15, 15);
+MiBarda3.rotation.y=-11;
+
+//BARDA
+const MiBarda4 = Barda({ x: 440, y: 0.6, z:0 });
+scene.add(MiBarda4);
+MiBarda4.scale.set(15, 15, 15);
+MiBarda4.rotation.y=-11;
+
+//BARDA
+const MiBarda5 = Barda({ x: 440, y: 0.6, z:95});
+scene.add(MiBarda5);
+MiBarda5.scale.set(15, 15, 15);
+MiBarda5.rotation.y=-11;
+
+// BARDA EXTRA DER 1 
+const MiBarda8 = Barda({ x: 440, y: 0.6, z: -190 });
+scene.add(MiBarda8);
+MiBarda8.scale.set(15, 15, 15);
+MiBarda8.rotation.y = -11;
+
+// BARDA EXTRA DER 2 
+const MiBarda9 = Barda({ x: 440, y: 0.6, z: -285 });
+scene.add(MiBarda9);
+MiBarda9.scale.set(15, 15, 15);
+MiBarda9.rotation.y = -11;
+
+//ENTRADA
+const miEntrada = Entrada({ x: 0, y: 0.5, z: 485});
+scene.add(miEntrada);
+miEntrada.scale.set(30, 30, 30);
+
+//MIRADOR
+const miMirador = MiradorNavideno({ x: -400, y: 0.6, z: 2 });
+scene.add(miMirador);
+miMirador.scale.set(15, 15, 15);
+miMirador.rotation.y=-11;
+
+//COMBI
+const miCombi = CombiNavidena({ x: -350, y: 9, z: 420 });
+scene.add(miCombi);
+miCombi.scale.set(15, 15, 15);
+miCombi.rotation.y=7;
+
+//CASTILLO
+const miCastillo= CastilloNavideno({ x: -80, y: 65, z: -410 });
+scene.add(miCastillo);
+miCastillo.scale.set(15, 15, 15);
+
+
+//🎰🎰Rendering y animación
+    requestAnimationFrame(render);
+    function render() {
+
+    //🪄🪄 Animación - 
+
+    //🎮🎮Actualización del OrbitControls para generar la suavidad de movimiento
+    controls.update();
+
+    //Llamado para renderizar y volver a llamar a la misma función (render)
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+
+    }
+</script>
+</body>
+</html>

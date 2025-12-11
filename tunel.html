@@ -1,0 +1,231 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <title>Tunel</title>
+</head>
+<body>
+    
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+
+<!-- Aquí va todo el código de three.js -->
+<!-- script type="importmap" importa las librerías necesarias para three.js-->
+<script type="importmap"> 
+    {
+        "imports":{
+            "three": "./js/three.module.js",
+            "three/OrbitControls": "./js/OrbitControls.js" 
+        }
+}
+</script>
+<script type="module"> 
+//🗃️🗃️ Mandar llamar a la librería
+    import * as THREE from 'three'; 
+    import {OrbitControls} from 'three/OrbitControls';
+    console.log(OrbitControls);
+    import {RoundedBoxGeometry} from "./js/RoundedBoxGeometry.js"
+
+//🕹️🕹️ Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('myCanvas'), antialias: true,
+    });
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xEBEBEB);
+
+
+// 🎬 Creando nueva escena - Es el espacio donde se colocan los objetos
+    var scene = new THREE.Scene();
+
+//🎥🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(70,window.innerWidth / window.innerHeight,0.1,2000
+      );
+    scene.add(camera);
+    const sizes ={
+        width: window.innerWidth,
+        height: window.innerHeight,
+    };
+    //redimensionar canvas
+      const canvas = document.getElementById('myCanvas');
+      window.addEventListener('resize', () => {
+      })
+sizes.width = window.innerWidth;
+sizes.height = window.innerHeight;
+
+ camera.aspect = sizes.width / sizes.height;
+ camera.updateProjectionMatrix();
+ renderer.setSize(sizes.width, sizes.height);
+
+    //Settings de la cámara
+    camera.position.set(0, 4, 30);
+
+    // Añadiendo los OrbitControls
+    var controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    var gridHelper = new THREE.GridHelper(50,50,);
+    //scene.add (gridHelper);
+
+    var gridHelper = new THREE.PolarGridHelper(20,16,20,64);
+    //scene. add (gridHelper); //maya
+
+    var gridHelper = new THREE.AxesHelper(500);
+    //scene. add (gridHelper);  //lineas de coodenadas
+
+    ///////////
+    ///LUCES
+   var light1= new THREE.DirectionalLight(0Xffffff,0.8);
+   light1.position.set (0,20,50);
+   scene.add(light1);
+
+// BASE
+var geometry10= new THREE. BoxGeometry (30,0.4,30)
+var material10= new THREE.MeshLambertMaterial({ 
+     color:0xCEF2DE, side: THREE.DoubleSide
+});
+   var mesh10= new THREE.Mesh(geometry10,material10);
+   scene.add(mesh10);
+   mesh10.position.set (-0,-1);
+   mesh10.castShadow = true;
+    
+// tunel HECHA SOLO CON MESH
+
+function Tunel({ x, y, z }) {
+
+    const TunelGroup = new THREE.Group();
+
+    // --- CUERPO PRINCIPAL ---
+    const gBase = new THREE.BoxGeometry(40, 25, 40);
+    const mBase = new THREE.MeshLambertMaterial({ color: 0xC49A6C });
+    const base = new THREE.Mesh(gBase, mBase);
+    base.position.set(50, 15, 0);
+    TunelGroup.add(base);
+
+    // --- ARCO ENTRADA ---
+    const gArco = new THREE.CylinderGeometry(12, 12, 10, 32, 1, false, 0, Math.PI);
+    const mArco = new THREE.MeshLambertMaterial({ color: 0x8B5A32 });
+    const arco = new THREE.Mesh(gArco, mArco);
+    arco.rotation.z =  1.55;
+    arco.position.set(35, 25, 0);
+    TunelGroup.add(arco);
+
+    // --- VENTANAS ---
+    const gVent = new THREE.BoxGeometry(6, 8, 1);
+    const mVent = new THREE.MeshLambertMaterial({ color: 0xffffff });
+
+    const ventana1 = new THREE.Mesh(gVent, mVent);
+    ventana1.position.set(50, 15,- 20);
+    TunelGroup.add(ventana1);
+
+    const ventana2 = new THREE.Mesh(gVent, mVent);
+    ventana2.position.set(50, 15, 20);
+    TunelGroup.add(ventana2);
+
+    // ------------------------------
+    //          VÍAS
+    // ------------------------------
+
+    // Riel izquierdo
+    const gRiel = new THREE.BoxGeometry(110, 1, 2);
+    const mRiel = new THREE.MeshLambertMaterial({ color: 0x333333 });
+
+    const riel1 = new THREE.Mesh(gRiel, mRiel);
+    riel1.position.set(0, 3, -10);
+    TunelGroup.add(riel1);
+
+    // Riel derecho
+    const riel2 = new THREE.Mesh(gRiel, mRiel);
+    riel2.position.set(0, 3, 10);
+    TunelGroup.add(riel2);
+
+    // --- Traviesa 1 ---
+    const gTrav = new THREE.BoxGeometry(20, 1, 3);
+    const mTrav = new THREE.MeshLambertMaterial({ color: 0x5A3A1E });
+
+    const trav1 = new THREE.Mesh(gTrav, mTrav);
+    trav1.position.set(-15, 3, 0);
+    trav1.rotation.y= 55;
+
+    TunelGroup.add(trav1);
+
+    // --- Traviesa 2 ---
+    const trav2 = new THREE.Mesh(gTrav, mTrav);
+    trav2.position.set(-25, 3, 0);
+    trav2.rotation.y= 55;
+
+    TunelGroup.add(trav2);
+
+    // --- Traviesa 3 ---
+    const trav3 = new THREE.Mesh(gTrav, mTrav);
+    trav3.position.set(-5, 3, 0);
+    trav3.rotation.y= 55;
+
+    TunelGroup.add(trav3);
+
+    // --- Traviesa 4 ---
+    const trav4 = new THREE.Mesh(gTrav, mTrav);
+    trav4.position.set(5, 3, 0);
+    trav4.rotation.y= 55;
+
+    TunelGroup.add(trav4);
+
+    // --- Traviesa 5 ---
+    const trav5 = new THREE.Mesh(gTrav, mTrav);
+    trav5.position.set(15, 3, 0);
+    trav5.rotation.y= 55;
+
+    TunelGroup.add(trav5);
+
+    // --- Traviesa 6 ---
+    const trav6 = new THREE.Mesh(gTrav, mTrav);
+    trav6.position.set(25, 3, 0);
+    trav6.rotation.y= 55;
+    
+    TunelGroup.add(trav6);
+
+        // --- Traviesa 7---
+    const trav7 = new THREE.Mesh(gTrav, mTrav);
+    trav7.position.set(-35, 3, 0);
+    trav7.rotation.y= 55;
+
+    TunelGroup.add(trav7);
+
+            // --- Traviesa 8---
+    const trav8 = new THREE.Mesh(gTrav, mTrav);
+    trav8.position.set(-45, 3, 0);
+    trav8.rotation.y= 55;
+
+    TunelGroup.add(trav8);
+    
+ 
+
+    // --- Posición del túnel ---
+    TunelGroup.position.set(x, y, z);
+
+    return TunelGroup;
+}
+
+// AGREGAR A LA ESCENA
+const miTunel = Tunel({ x: 0, y: 1, z: 0 });
+scene.add(miTunel);
+
+
+//🎰🎰Rendering y animación
+    requestAnimationFrame(render);
+    function render() {
+
+    //🪄🪄 Animación - 
+ 
+    //🎮🎮Actualización del OrbitControls para generar la suavidad de movimiento
+    controls.update();
+
+    //Llamado para renderizar y volver a llamar a la misma función (render)
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+    }
+</script>
+</body>
+</html>

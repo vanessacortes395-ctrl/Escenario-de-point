@@ -1,0 +1,227 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <title>CARRUSEL</title>
+</head>
+<body>
+    
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+
+<!-- Aquí va todo el código de three.js -->
+<!-- script type="importmap" importa las librerías necesarias para three.js-->
+<script type="importmap"> 
+    {
+        "imports":{
+            "three": "./js/three.module.js",
+            "three/OrbitControls": "./js/OrbitControls.js" 
+        }
+}
+</script>
+<script type="module"> 
+//🗃️🗃️ Mandar llamar a la librería
+    import * as THREE from 'three'; 
+    import {OrbitControls} from 'three/OrbitControls';
+    console.log(OrbitControls);
+    import {RoundedBoxGeometry} from "./js/RoundedBoxGeometry.js"
+
+//🕹️🕹️ Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('myCanvas'), antialias: true,
+    });
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xEBEBEB);
+
+
+// 🎬 Creando nueva escena - Es el espacio donde se colocan los objetos
+    var scene = new THREE.Scene();
+
+//🎥🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(70,window.innerWidth / window.innerHeight,0.1,2000
+      );
+    scene.add(camera);
+    const sizes ={
+        width: window.innerWidth,
+        height: window.innerHeight,
+    };
+    //redimensionar canvas
+      const canvas = document.getElementById('myCanvas');
+      window.addEventListener('resize', () => {
+      })
+sizes.width = window.innerWidth;
+sizes.height = window.innerHeight;
+
+ camera.aspect = sizes.width / sizes.height;
+ camera.updateProjectionMatrix();
+ renderer.setSize(sizes.width, sizes.height);
+
+    //Settings de la cámara
+    camera.position.set(0, 4, 30);
+
+    // Añadiendo los OrbitControls
+    var controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    var gridHelper = new THREE.GridHelper(50,50,);
+    //scene.add (gridHelper);
+
+    var gridHelper = new THREE.PolarGridHelper(20,16,20,64);
+    //scene. add (gridHelper); //maya
+
+    var gridHelper = new THREE.AxesHelper(500);
+    //scene. add (gridHelper);  //lineas de coodenadas
+
+    ///////////
+    ///LUCES
+   var light1= new THREE.DirectionalLight(0Xffffff,0.8);
+   light1.position.set (0,20,50);
+   scene.add(light1);
+
+// BASE
+var geometry10= new THREE. BoxGeometry (30,0.4,30)
+var material10= new THREE.MeshLambertMaterial({ 
+     color:0xCEF2DE, side: THREE.DoubleSide
+});
+   var mesh10= new THREE.Mesh(geometry10,material10);
+   scene.add(mesh10);
+   mesh10.position.set (-0,-1);
+   mesh10.castShadow = true;
+    
+//              CARRUSEL 
+
+function Carrusel({ x, y, z }) {
+
+    const CarruselGroup = new THREE.Group();
+
+    // Base (Cilindro grande y plano)
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 0.5, 8), new THREE.MeshLambertMaterial({ color: 0xADD8E6 })); // Azul Claro
+    base.position.set(0, 0.25, 0);
+    CarruselGroup.add(base);
+
+    // Techo (Cono)
+    const techo = new THREE.Mesh(new THREE.ConeGeometry(9, 3, 8), new THREE.MeshLambertMaterial({ color: 0xADD8E6 })); // Azul Claro
+    techo.position.set(0, 8, 0);
+    CarruselGroup.add(techo);
+
+    // Soporte Central (Cilindro alto)
+    const centro = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 8, 8), new THREE.MeshLambertMaterial({ color: 0xFFD700 })); // Dorado
+    centro.position.set(0, 4.5, 0);
+    CarruselGroup.add(centro);
+
+    // Columna 1
+    const columna1 = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 7, 4), new THREE.MeshLambertMaterial({ color: 0xFFD700 })); // Dorado
+    columna1.position.set(7, 4, 0);
+    CarruselGroup.add(columna1);
+
+    // Columna 2
+    const columna2 = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 7, 4), new THREE.MeshLambertMaterial({ color: 0xFFD700 })); // Dorado
+    columna2.position.set(-7, 4, 0);
+    CarruselGroup.add(columna2);
+
+    // Columna 3
+    const columna3 = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 7, 4), new THREE.MeshLambertMaterial({ color: 0xFFD700 })); // Dorado
+    columna3.position.set(0, 4, 7);
+    CarruselGroup.add(columna3);
+
+    // Columna 4
+    const columna4 = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 7, 4), new THREE.MeshLambertMaterial({ color: 0xFFD700 })); // Dorado
+    columna4.position.set(0, 4, -7);
+    CarruselGroup.add(columna4);
+
+    // Caballo 1 (Verde)
+    const CaballoGroup1 = new THREE.Group();
+    const cuerpo1 = new THREE.Mesh(new THREE.BoxGeometry(2, 1, 0.5), new THREE.MeshLambertMaterial({ color: 0x008000 })); // Verde Oscuro
+    cuerpo1.position.set(0, 1.5, 0);
+    CaballoGroup1.add(cuerpo1);
+    const cuello1 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 1, 0.5), new THREE.MeshLambertMaterial({ color: 0x008000 })); // Verde Oscuro
+    cuello1.position.set(0.8, 2, 0);
+    CaballoGroup1.add(cuello1);
+    const cabeza1 = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.5, 0.5), new THREE.MeshLambertMaterial({ color: 0x8B4513 })); // Marrón (Madera)
+    cabeza1.position.set(1.2, 2.3, 0);
+    CaballoGroup1.add(cabeza1);
+    const poste1 = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 4, 4), new THREE.MeshLambertMaterial({ color: 0xFFD700 })); // Dorado
+    poste1.position.set(0, 2, 0);
+    CaballoGroup1.add(poste1);
+    CaballoGroup1.position.set(4, 0, 0);
+    CarruselGroup.add(CaballoGroup1);
+    
+    // Caballo 2 (Verde)
+    const CaballoGroup2 = new THREE.Group();
+    const cuerpo2 = new THREE.Mesh(new THREE.BoxGeometry(2, 1, 0.5), new THREE.MeshLambertMaterial({ color: 0x008000 })); // Verde Oscuro
+    cuerpo2.position.set(0, 1.5, 0);
+    CaballoGroup2.add(cuerpo2);
+    const cuello2 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 1, 0.5), new THREE.MeshLambertMaterial({ color: 0x008000 })); // Verde Oscuro
+    cuello2.position.set(0.8, 2, 0);
+    CaballoGroup2.add(cuello2);
+    const cabeza2 = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.5, 0.5), new THREE.MeshLambertMaterial({ color: 0x8B4513 })); // Marrón (Madera)
+    cabeza2.position.set(1.2, 2.3, 0);
+    CaballoGroup2.add(cabeza2);
+    const poste2 = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 4, 4), new THREE.MeshLambertMaterial({ color: 0xFFD700 })); // Dorado
+    poste2.position.set(0, 2, 0);
+    CaballoGroup2.add(poste2);
+    CaballoGroup2.position.set(-4, 0, 0);
+    CarruselGroup.add(CaballoGroup2);
+
+    // Caballo 3 (Rojo)
+    const CaballoGroup3 = new THREE.Group();
+    const cuerpo3 = new THREE.Mesh(new THREE.BoxGeometry(2, 1, 0.5), new THREE.MeshLambertMaterial({ color: 0xCC0000 })); // Rojo
+    cuerpo3.position.set(0, 1.5, 0);
+    CaballoGroup3.add(cuerpo3);
+    const cuello3 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 1, 0.5), new THREE.MeshLambertMaterial({ color: 0xCC0000 })); // Rojo
+    cuello3.position.set(0.8, 2, 0);
+    CaballoGroup3.add(cuello3);
+    const cabeza3 = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.5, 0.5), new THREE.MeshLambertMaterial({ color: 0xFFFFFF })); // Blanco
+    cabeza3.position.set(1.2, 2.3, 0);
+    CaballoGroup3.add(cabeza3);
+    const poste3 = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 4, 4), new THREE.MeshLambertMaterial({ color: 0xFFD700 })); // Dorado
+    poste3.position.set(0, 2, 0);
+    CaballoGroup3.add(poste3);
+    CaballoGroup3.position.set(0, 0, 4); 
+    CarruselGroup.add(CaballoGroup3);
+
+    // Caballo 4 (Rojo)
+    const CaballoGroup4 = new THREE.Group();
+    const cuerpo4 = new THREE.Mesh(new THREE.BoxGeometry(2, 1, 0.5), new THREE.MeshLambertMaterial({ color: 0xCC0000 })); // Rojo
+    cuerpo4.position.set(0, 1.5, 0);
+    CaballoGroup4.add(cuerpo4);
+    const cuello4 = new THREE.Mesh(new THREE.BoxGeometry(0.3, 1, 0.5), new THREE.MeshLambertMaterial({ color: 0xCC0000 })); // Rojo
+    cuello4.position.set(0.8, 2, 0);
+    CaballoGroup4.add(cuello4);
+    const cabeza4 = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.5, 0.5), new THREE.MeshLambertMaterial({ color: 0xFFFFFF })); // Blanco
+    cabeza4.position.set(1.2, 2.3, 0);
+    CaballoGroup4.add(cabeza4);
+    const poste4 = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 4, 4), new THREE.MeshLambertMaterial({ color: 0xFFD700 })); // Dorado
+    poste4.position.set(0, 2, 0);
+    CaballoGroup4.add(poste4);
+    CaballoGroup4.position.set(0, 0, -4); 
+    CarruselGroup.add(CaballoGroup4);
+
+
+    CarruselGroup.position.set(x, y, z);
+    return CarruselGroup;
+}
+
+// AGREGAR A LA ESCENA
+const miCarrusel = Carrusel({ x: 0, y: 0, z: 0 });
+scene.add(miCarrusel);
+
+//🎰🎰Rendering y animación
+    requestAnimationFrame(render);
+    function render() {
+
+    //🪄🪄 Animación - 
+ 
+    //🎮🎮Actualización del OrbitControls para generar la suavidad de movimiento
+    controls.update();
+
+    //Llamado para renderizar y volver a llamar a la misma función (render)
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+    }
+</script>
+</body>
+</html>
