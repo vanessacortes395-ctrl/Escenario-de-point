@@ -1,0 +1,167 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <title>CUPULA</title>
+</head>
+<body>
+    
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+
+<!-- Aquí va todo el código de three.js -->
+<!-- script type="importmap" importa las librerías necesarias para three.js-->
+<script type="importmap"> 
+    {
+        "imports":{
+            "three": "./js/three.module.js",
+            "three/OrbitControls": "./js/OrbitControls.js" 
+        }
+}
+</script>
+<script type="module"> 
+//🗃️🗃️ Mandar llamar a la librería
+    import * as THREE from 'three'; 
+    import {OrbitControls} from 'three/OrbitControls';
+    console.log(OrbitControls);
+    import {RoundedBoxGeometry} from "./js/RoundedBoxGeometry.js"
+
+//🕹️🕹️ Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('myCanvas'), antialias: true,
+    });
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xEBEBEB);
+
+
+// 🎬 Creando nueva escena - Es el espacio donde se colocan los objetos
+    var scene = new THREE.Scene();
+
+//🎥🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(70,window.innerWidth / window.innerHeight,0.1,2000
+      );
+    scene.add(camera);
+    const sizes ={
+        width: window.innerWidth,
+        height: window.innerHeight,
+    };
+    //redimensionar canvas
+      const canvas = document.getElementById('myCanvas');
+      window.addEventListener('resize', () => {
+      })
+sizes.width = window.innerWidth;
+sizes.height = window.innerHeight;
+
+ camera.aspect = sizes.width / sizes.height;
+ camera.updateProjectionMatrix();
+ renderer.setSize(sizes.width, sizes.height);
+
+    //Settings de la cámara
+    camera.position.set(0, 4, 30);
+
+    // Añadiendo los OrbitControls
+    var controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    var gridHelper = new THREE.GridHelper(50,50,);
+    //scene.add (gridHelper);
+
+    var gridHelper = new THREE.PolarGridHelper(20,16,20,64);
+    //scene. add (gridHelper); //maya
+
+    var gridHelper = new THREE.AxesHelper(500);
+    //scene. add (gridHelper);  //lineas de coodenadas
+
+
+    ///LUCES
+   var light1= new THREE.DirectionalLight(0Xffffff,0.8);
+   light1.position.set (0,20,50);
+   scene.add(light1);
+ 
+    
+   
+function BolaDeNieve({ x, y, z }) {
+
+  // BASE BOLA
+  var gBase = new THREE.CylinderGeometry(3, 3, 1, 32);
+  var mBase = new THREE.MeshLambertMaterial({ color: 0x8B5A2B }); 
+  var base = new THREE.Mesh(gBase, mBase);
+  base.position.set(0, 0.5, 0);
+
+  //  CÚPULA 
+  var gCúpula = new THREE.SphereGeometry(3, 32, 32);
+  var mCúpula = new THREE.MeshLambertMaterial({
+    color: 0x99ccff,      
+    transparent: true,
+    opacity: 0.4,           
+  });
+  var cupula = new THREE.Mesh(gCúpula, mCúpula);
+  cupula.position.set(0, 3.5, 0);
+
+  // MUÑECO D NIEVE
+  // cuerpo
+  var gCuerpo = new THREE.SphereGeometry(1, 16, 16);
+  var mCuerpo = new THREE.MeshLambertMaterial({ color: 0xffffff });
+  var cuerpo = new THREE.Mesh(gCuerpo, mCuerpo);
+  cuerpo.position.set(0, 1.2, 0);
+
+  // cabeza
+  var gCabeza = new THREE.SphereGeometry(0.6, 16, 16);
+  var cabeza = new THREE.Mesh(gCabeza, mCuerpo);
+  cabeza.position.set(0, 2.2, 0);
+
+  // sombrero
+  var gSombrero = new THREE.CylinderGeometry(0.4, 0.4, 0.6, 12);
+  var mSombrero = new THREE.MeshLambertMaterial({ color: 0x000000 });
+  var sombrero = new THREE.Mesh(gSombrero, mSombrero);
+  sombrero.position.set(0, 2.8, 0);
+
+  // ala del sombrero
+  var gAla = new THREE.CylinderGeometry(0.6, 0.6, 0.1, 12);
+  var ala = new THREE.Mesh(gAla, mSombrero);
+  ala.position.set(0, 2.6, 0);
+
+  // nariz 
+  var gNariz = new THREE.ConeGeometry(0.1, 0.4, 8);
+  var mNariz = new THREE.MeshLambertMaterial({ color: 0xff6600 }); 
+  var nariz = new THREE.Mesh(gNariz, mNariz);
+  nariz.position.set(0, 2.2, 0.7);
+   nariz.rotation.x = -5;
+
+  //  AGRUPAR ELEMENTOS INTERNOS 
+  const muneco = new THREE.Group();
+  muneco.add(cuerpo, cabeza, sombrero, ala, nariz);
+
+  //  AGRUPAR TODO 
+  const BolaGroup = new THREE.Group();
+  BolaGroup.add(base, cupula, muneco);
+
+  //  POSICIÓN GENERAL 
+  BolaGroup.position.set(x, y, z);
+
+  return BolaGroup;
+}
+
+// AGREGAR A LA ESCENA
+const miBola = BolaDeNieve({ x: 0, y: 0, z: 0 });
+scene.add(miBola);
+
+//🎰🎰Rendering y animación
+    requestAnimationFrame(render);
+    function render() {
+
+    //🪄🪄 Animación - 
+ 
+    //🎮🎮Actualización del OrbitControls para generar la suavidad de movimiento
+    controls.update();
+
+    //Llamado para renderizar y volver a llamar a la misma función (render)
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+    }
+</script>
+</body>
+</html>
